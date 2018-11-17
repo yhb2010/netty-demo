@@ -1,0 +1,5 @@
+利用nio进行网络编程时，往往需要将读取到的字节数组或者字节缓冲区解码为业务可以使用的pojo对象。为了方便业务将ByteBuf解码成业务pojo对象，netty提供了
+ByteToMessageDecoder抽象工具解码类。
+用户的解码器继承ByteToMessageDecoder，只需要实现void decode抽象方法即可完成ByteBuf到pojo对象的解码。
+由于ByteToMessageDecoder没有考虑tcp粘包和拆包等场景，读半包需要用户解码器自己负责处理，正因为此，对于大多数场景不会直接继承ByteToMessageDecoder
+而是继承另外一些更高级的解码器来屏蔽半包的处理。

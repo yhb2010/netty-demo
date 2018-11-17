@@ -1,0 +1,18 @@
+writeBoolean(boolean value)：将value写入到当前ByteBuf中。写入成功，writeIndex+=1
+writeByte(int value)：将value写入到当前ByteBuf中。写入成功，writeIndex+=1
+writeShort(int value)：将value写入到当前ByteBuf中。写入成功，writeIndex+=2
+writeInt(int   value)：将value写入到当前ByteBuf中。写入成功，writeIndex+=4
+writeLong(long  value)：将value写入到当前ByteBuf中。写入成功，writeIndex+=8
+writeChar(int value)：将value写入到当前ByteBuf中。写入成功，writeIndex+=2
+writeFloat(float value)：将value写入到当前ByteBuf中。写入成功，writeIndex+=4
+writeDouble(double value)：将value写入到当前ByteBuf中。写入成功，writeIndex+=8
+writeBytes(ByteBuf src)：将源ByteBuf src中从readerIndex开始的所有可读字节写入到当前ByteBuf。从当前ByteBuf的writeIndex写入数据。写入成功，writeIndex+=src.readableBytes
+writeBytes(ByteBuf src, int length)：将源ByteBuf src中从readerIndex开始，长度length的可读字节写入到当前ByteBuf。从当前ByteBuf的writeIndex写入数据。写入成功，writeIndex+=length
+writeBytes(ByteBuf src, int srcIndex, int length)：将源ByteBuf src中从srcIndex开始，长度length的可读字节写入到当前ByteBuf。从当前ByteBuf的writeIndex写入数据。写入成功，writeIndex+=length
+writeBytes(byte[] src)：将源字节数组src中所有可读字节写入到当前ByteBuf。从当前ByteBuf writeIndex写入数据。写入成功，writeIndex+=src.length
+writeBytes(byte[] src, int srcIndex, int length)：将源字节数组src中srcIndex开始，长度为length可读字节写入到当前ByteBuf。从当前ByteBuf writeIndex写入数据。写入成功，writeIndex+=length
+writeBytes(ByteBuffer src)：将源ByteBuffer src中所有可读字节写入到当前ByteBuf。从当前ByteBuf的writeIndex写入数据。写入成功，writeIndex+=src.remaining()
+writeBytes(InputStream in, int length)：将源InputStream in中的内容写入到当前ByteBuf，写入的最大长度为length，实际写入的字节数可能少于length。从当前ByteBuf的writeIndex写入数据。写入成功，writeIndex+=实际写入的字节数。返回实际写入的字节数
+writeBytes(ScatteringByteChannel in, int length)：将源ScatteringByteChannel in中的内容写入到当前ByteBuf，写入的最大长度为length，实际写入的字节数可能少于length。从当前ByteBuf writeIndex写入数据。写入成功，writeIndex+=实际写入的字节数。
+返回实际写入的字节数
+writeZero(int length)：将当前缓冲区的内容填充为NUL（0x00），当前ByteBuf的writeIndex写入数据。写入成功，writeIndex+=length

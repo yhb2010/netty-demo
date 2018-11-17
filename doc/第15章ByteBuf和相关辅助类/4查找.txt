@@ -1,0 +1,18 @@
+indexOf(int fromIndex, int toIndex, byte value)：从当前ByteBuf中定位出首次出现value的位置。起始索引为fromIndex，终点是toIndex。如果没有查找到
+则返回-1，否则返回第一条满足搜索条件的位置索引
+bytesBefore(byte value)：从当前ByteBuf中定位出首次出现value的位置。起始索引为readerIndex，终点为writeIndex。没有找到则返回-1，否则返回第一条满足搜索
+条件的位置索引。该方法不会修改readerIndex和writeIndex
+bytesBefore(int length, byte value)：从当前ByteBuf中定位出首次出现value的位置。起始索引为readerIndex，终点是readerIndex+length。
+bytesBefore(int index, int length, byte value)：从当前ByteBuf中定位出首次出现value的位置。起始索引为index，终点是index+length。
+forEachByte(ByteBufProcessor pro)：遍历当前ByteBuf的可读字节数组，与ByteBufProcessor设置的查找条件进行对比，如果满足条件，则返回位置索引，否则-1
+forEachByte(int index, int length, ByteBufProcessor pro)：以index为起始位置，index+length为终止位置进行遍历，与ByteBufProcessor设置
+的查找条件进行对比，如果满足条件，则返回位置索引，否则-1
+forEachByteDesc(ByteBufProcessor pro)：遍历当前ByteBuf的可读字节数组，与ByteBufProcessor设置的查找条件进行对比，如果满足条件，则返回位置索引，否则-1，
+注意对字节数组迭代的时候采用逆序，也就是从writeIndex-1开始，直到readerIndex
+forEachByteDesc(int index, int length, ByteBufProcessor pro)：
+对于查找的字节而言，存在一些常用值，ByteBufProcessor中进行了抽象：
+	FIND_NUL：nul0x00
+	FIND_CR："\r"
+	FIND_LF："\n"
+	FIND_CRLF："\r"或"\n"
+	FIND_LINEAR_WHITESPACE：" "或者"\t"

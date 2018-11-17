@@ -1,0 +1,24 @@
+readBoolean()：从readerIndex开始获取boolean值，readerIndex增加1
+readByte()　
+readUnsignedByte()：从readerIndex开始读取（无符号）字节值，readerIndex增加1
+readShort()　
+readUnsignedShort()：从readerIndex开始读取（无符号）短整型值，readerIndex增加2
+readInt()　
+readUnsignedInt()：从readerIndex开始读取（无符号）整型值，readerIndex增加4
+readLong()：从readerIndex开始读取（无符号）长整型值，readerIndex增加4
+readChar：从readerIndex开始读取字符值，readerIndex增加2
+readFloat：从readerIndex开始读取浮点值，readerIndex增加4
+readDouble：从readerIndex开始读取双精度浮点值，readerIndex增加8
+readBytes(int length)：将当前ByteBuf中的数据读取到新创建的ByteBuf中，从readerIndex开始读取length字节的数据。返回的ByteBuf的readerIndex为0，writeIndex为length。
+如果读取的长度length大于当前操作的ByteBuf的可写字节数，将抛出IndexOutOfBoundsException。
+readSlice(int length)：返回当前ByteBuf新创建的子区域，子区域和原ByteBuf共享缓冲区的内容，但独立维护自己的readerIndex和writeIndex，新创建的子区域readerIndex为0，writeIndex为length。
+如果读取的长度length大于当前操作的ByteBuf的可写字节数，将抛出IndexOutOfBoundsException。
+readBytes(ByteBuf dst)：将当前ByteBuf中的数据读取到目标ByteBuf（dst）中，从当前ByteBuf readerIndex开始读取，直到目标ByteBuf无可写空间，从目标ByteBuf writeIndex开始写入数据。读取完成后，当前ByteBuf的readerIndex+=读取的字节数。目标ByteBuf的writeIndex+=读取的字节数。
+readBytes(ByteBuf dst, int length)：将当前ByteBuf中的数据读取到目标ByteBuf（dst）中，从当前ByteBuf的readerIndex开始读取，长度为length，从目标ByteBuf的writeIndex开始写入数据。读取完成后，当前ByteBuf的readerIndex+=length，目标ByteBuf的writeIndex+=length
+readBytes(ByteBuf dst, int dstIndex, int length)：将当前ByteBuf中的数据读取到目标ByteBuf（dst）中，从readerIndex开始读取，长度为length，从目标ByteBuf的dstIndex开始写入数据。读取完成后，当前ByteBuf的readerIndex+=length，目标ByteBuf的writeIndex+=length
+readBytes(byte[] dst)：将当前ByteBuf中的数据读取到byte数组dst中，从当前ByteBuf的readerIndex开始读取，读取长度为dst.length，从byte数组dst索引0处开始写入数据。
+readBytes(byte[] dst, int dstIndex, int length)：将当前ByteBuf中的数据读取到byte数组dst中，从当前ByteBuf的readerIndex开始读取，读取长度为length，从byte数组dst索引dstIndex处开始写入数据。
+readBytes(ByteBuffer dst)：将当前ByteBuf中的数据读取到ByteBuffer dst中，从当前ByteBuf的readerIndex开始读取，直到dst的位置指针到达ByteBuffer的limit。读取完成后，当前ByteBuf的readerIndex+=dst.remaining()
+readBytes(OutputStream out, int length)：将当前ByteBuf readerIndex读取数据到输出流OutputStream中，读取的字节长度为length
+readBytes(GatheringByteChannel out, int length)将当前ByteBuf的readerIndex读取数到GatheringByteChannel中，写入out的最大字节长度为length。GatheringByteChannel为非阻塞Channel，调用其write方法不能够保存将全部需要写入的数据均写入成功，存在半包问题。
+因此其写入的数据长度为【0，length】，如果操作成功，readerIndex+=实际写入的字节数，返回实际写入的字节数

@@ -1,0 +1,59 @@
+ChannelFuture有两种状态：uncompleted和completed，当开始一个io操作时，一个新的ChannelFuture被创建，此时它处于uncompleted状态——非失败、非成功、非取消，
+因为io操作此时还没有完成，一旦io操作完成，ChannelFuture将被设置成completed，他的结果可能有三个：
+	1、操作成功：isDone=true、isSuccess=true
+	2、操作失败：isDone=true、cause=not null
+	3、操作被取消：isDone=true、isCancelled=true
+	
+netty建议直接通过添加监听器的方式获取io操作的结果，或者进行后续的相关操作，因为：
+	当我们进行异步io操作时，完成的时间是无法预测的，如果不设置超时时间，它会导致调用线程长时间被阻塞，甚至挂死。而设置超时时间，又无法精确预测。利用异步通知机制回调
+	GenericFutureListener是最佳的解决方案，性能最优。
+	ChannelFuture可以同时增加一个或多个GenericFutureListener，也可以用remove方法删除GenericFutureListener
+
+BAD-NEVER DO THIS
+@Overide
+public void channelRead(ChannelHandlerContext ctx, GoodByeMessage msg){
+	ChannelFuture future = ctx.channel().close();
+	future.awaitUninterruptibly();
+}
+GOOD
+@Override
+public void channelRead(ChannelHandlerContext ctx, GoodByeMessage msg){
+	ChannelFuture future = ctx.channel().close();
+	future.addListener(new ChannelFutureListener(){
+		public void operationComplete(ChannelFuture future){
+			
+		}
+	});
+}
+
+异步io操作有两类超时：一个是tcp层面的io超时，另一个是业务逻辑层面的操作超时。两者没有必然的联系，但是通常情况下业务逻辑超时时间应该大于io超时时间，他们两者是包含的关系。
+GOOD
+// configure the connect timeout option
+b.option(ChaanelOption.CONNECT_TIMEOUT_MILLIS, 10000);
+ChannelFuture f = b.connect(...);
+f.awaitUninterruptibly();
+
+// Now we are sure the future is completed
+assert f.isDone();
+
+if(f.isCancelled()){
+	// Connection attempt cancelled by user
+}else if(!f.isSuccess()){
+	f.cause().printStackTrace();
+}else{
+	// Connection established successfully
+}
+
+ChannelFuture超时时间配置：
+Bootstrap b = ...;
+ChannelFuture f = b.connect(...);
+f.awaitUninterruptibly(10, TimeUnit.SECONDS);
+
+if(f.isCancelled()){
+	// Connection attempt cancelled by user
+}else if(!f.isSuccess()){
+// You might get a NullPointException here because the future mgiht not be completed yet.
+	f.cause().printStackTrace();
+}else{
+	// Connection established successfully
+}

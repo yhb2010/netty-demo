@@ -1,0 +1,44 @@
+ChannelHandler主要由两种组成，ChannelInboundHandler和ChannelOutboundHandler这两种
+其中ChannelInboundHandler是进站处理器，当channel进站时，产生一的一系列事件将由ChannelHandler所对应的API处理，当然netty是基于事件异步处理的，
+是由EventLoop不停地select出事件然后调用ChannelHandler的API，同理ChannelOutboundHandler是出站处理器。
+ChannelPipeline为ChannelHandler链提供了容器，并定义了用于在该链上传播入站和出站事件流的API。当Channel被创建时，他会自动的分配到它专属的
+ChannelPipeline。
+
+ChannelHandller安装到ChannelPipeline中的过程如下所示：
+	一个ChannelInitializer的实现被注册到了ServerBootstrap中；
+	当ChannelInitializer.initChannel（）方法被调用时，ChannelInitializer将在ChannelPipeline中安装一组自定义的ChannelHandler；
+	ChannelInitializer将它自己从ChannelPipeline中移除
+也就是说ChannelPipeline是ChannelHandler的容器，这样使得事件流经ChannelPipeline是ChannelHandler的工作，它们是在应用程序的初始化或者引导阶
+段被安装的。这些对象接受事件，执行它们所实现的处理逻辑，并将数据传递给链中的下一个ChannelHandler。它们的执行顺序是由它们被添加的顺序所决定的。实际
+上，被我们称为ChannelPipeline是这些ChannelHandler的编排顺序。
+
+那么入站处理器ChannelInboundHannelHandler和ChannelOutboundHandler有什么区别呢。举一个例子
+	ChannelPipeline p = ...;
+	p.addLast("1", new InboundHandlerA());
+	p.addLast("2", new InboundHandlerB());
+	p.addLast("3", new OutboundHandlerA());
+	p.addLast("4", new OutboundHandlerB());
+	p.addLast("5", new InboundOutboundHandlerX());
+从代码中我们知道ChannelHandler在ChannelPipeline中的编排顺序是从1，2，3，4，5。当入站时是从ChannelPipeline中从头部一次执行的，也就是一次执行
+1，2，5；同理当出站时是从ChannelPipeline的尾部像头部的方向一次执行的，也就是一次执行5，4，3；
+那么弄清了ChannelInboundHandler和ChannelOutboundHandler的区别后，接下来需要了解什么情况下是出站，什么情况下入站，例如：从一个客户端应用程序的
+角度看，如果事件的运动方向是客户端到服务端，那么我们称这些时间为出站的，反之则成为入站，同理，从一个服务端的角度看，如果事件的运动方向是服务端到客户端
+则称为出站，反之为入站。
+
+inbound事件通常由io线程触发，例如tcp链路建立事件、链路关闭事件、读事件爱你、异常通知事件等。
+	channelRegistered：Channel注册事件
+	channelActive：tcp链路建立成功，Channel激活事件
+	channelRead：读事件
+	channelReadComplete：读操作完成通知事件
+	exceptionCaught：异常通知事件
+	userEventTriggered：用户自定义事件
+	channelWritabilityChanged：Channel的可写状态变化通知事件
+	channelInactive：tcp连接关闭，链路不可用通知事件
+outbound事件：
+	bind：绑定本地地址事件
+	connect：连接服务端事件
+	write：发送事件
+	flush：刷新事件
+	read：读事件
+	disconnect：断开连接事件
+	close：关闭当前Channel事件

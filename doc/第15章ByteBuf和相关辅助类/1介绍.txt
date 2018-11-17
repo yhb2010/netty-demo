@@ -1,0 +1,46 @@
+网络传输的载体是byte，这是任何框架谁也逃脱不了的一种规定，JAVA的NIO提供了ByteBuffer，用来完成这项任务，当然ByteBuffer也很好的完成了这个任务，Netty也提供了一个名字很相似的载体叫做ByteBuf，相比于ByteBuf而言，它有着更加更多友善的API,也更加易于维护，并且它可以扩容
+
+一般来说，ByteBuf都是维护一个byte数组的，它的内部格式是长成这个样子的
+
+ *      +-------------------+------------------+------------------+
+ *      | discardable bytes |  readable bytes  |  writable bytes  |
+ *      |                   |     (CONTENT)    |                  |
+ *      +-------------------+------------------+------------------+
+ *      |                   |                  |                  |
+ *      0      <=      readerIndex   <=   writerIndex    <=    capacity
+与原生态的ByteBuffer相比，它维护了两个指针，一个是读指针，一个是写指针，而原生态的ByteBuffer只维护了一个指针，你需要调用flip方法来切换读写的状态，不易用户管理维护
+
+读的时候，可读的区域是下标区间是[readerIndex，writeIndex)，可写区间的是[writerIndex,capacity-1]，但是discardable这段区间就会变得相对无用，既不能读，也不能写
+
+所以我们可以使用discardReadBytes的方法进行内存空间的回收，回收之后是这样的：
+
+ *      +------------------+--------------------------------------+
+ *      |  readable bytes  |    writable bytes (got more space)   |
+ *      +------------------+--------------------------------------+
+ *      |                  |                                      |
+ * readerIndex (0) <= writerIndex (decreased)        <=        capacity
+
+discardReadBytes之后，可读段被移到了该内存空间的最左端，可写段从空间容量来说，变大了，变成了回收之前的可写段+discard段内存之和，这样做的唯一问题就是性能问题，因为可读段的字节迁移问题，如果大量调用该方法，会产生很多的复制操作，所以除非能获取discard的很大空间，一般情况下，高并发的情况下，不适合多调用
+
+当然还有clear方法，这个方法简单易懂，调用之前ByteBuf是长成这样的：
+
+ *      +-------------------+------------------+------------------+
+ *      | discardable bytes |  readable bytes  |  writable bytes  |
+ *      +-------------------+------------------+------------------+
+ *      |                   |                  |                  |
+ *      0      <=      readerIndex   <=   writerIndex    <=    capacity
+调用完之后是长成这样的：
+ *      +---------------------------------------------------------+
+ *      |             writable bytes (got more space)             |
+ *      +---------------------------------------------------------+
+ *      |                                                         |
+ *      0 = readerIndex = writerIndex            <=            capacity
+ByteBuf除了discardReadBytes和clear方法之外，还提供了大量的丰富的读写方法，此处就不一一列举了
+
+还有几个比较重要的API,这里也说明一下
+
+1）duplicate方法：复制当前对象，复制后的对象与前对象共享缓冲区，且维护自己的独立索引
+
+2）copy方法：复制一份全新的对象，内容和缓冲区都不是共享的
+
+3）slice方法：获取调用者的子缓冲区，且与原缓冲区共享缓冲区

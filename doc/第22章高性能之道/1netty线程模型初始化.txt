@@ -1,0 +1,16 @@
+单线程模型：
+	EventLoopGroup reactorGroup = new NioEventLoopGroup(1);
+	ServerBootstrap b = new ();
+	b.group(reactorGroup, reactorGroup);
+
+多线程模型：
+	EventLoopGroup reactorGroup = new NioEventLoopGroup(1);
+	EventLoopGroup ioGroup = new NioEventLoopGroup();
+	ServerBootstrap b = new ();
+	b.group(reactorGroup, ioGroup);
+
+主从线程模型：
+	EventLoopGroup reactorGroup = new NioEventLoopGroup();
+	EventLoopGroup ioGroup = new NioEventLoopGroup();
+	ServerBootstrap b = new ();
+	b.group(reactorGroup, ioGroup);

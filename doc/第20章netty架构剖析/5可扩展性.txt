@@ -1,0 +1,3 @@
+基于netty的基础nio框架，可以方便的进行应用层协议定制，例如http协议栈、thrift协议栈、ftp协议栈等。这些扩展不需要修改netty的源码，直接基于netty的二进制类库即可实现协议的
+扩展和定制。
+目前业界存在大量的基于netty框架开发的协议，例如基于netty的http协议、dubbo协议、rocketMQ协议。

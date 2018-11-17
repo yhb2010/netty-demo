@@ -1,0 +1,2 @@
+netty的NioEventLoop读取到消息后，直接调用ChannelPipeline的fireChannelRead，只要用户不主动切换线程，一直会由NioEventLoop调用到用户的
+Handler，期间不进行线程切换。这种串行化处理方式避免了多线程操作导致的锁竞争，从性能角度看是最优的。

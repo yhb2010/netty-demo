@@ -1,0 +1,11 @@
+netty提供了大量的系统ChannelHandler供用户使用：
+	系统编解码框架：ByteToMessageCodec
+	通用基于长度的半包解码器：LengthFieldBasedFrameDecoder
+	码流日志打印Handler：LoggingHandler
+	SSL安全认证Handler：SslHandler
+	链路空闲检测Handler：IdleStateHandler
+	流量整形Handler：ChannelTrafficShapingHandler
+	Base64编解码：Base64Decoder和Base64Encoder
+	
+ServerBootstrape中的Handler是NioServerSocketChannel使用的，所有连接该监听端口的客户端都会执行它，父类AbstractBootstrap中的Handler是个工厂类，
+它为每个新接入的客户端都创建一个新的Handler。

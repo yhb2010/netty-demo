@@ -1,0 +1,13 @@
+相比于netty的早期版本，netty5版本的优雅退出功能做的更加完善。优雅停机功能指的是当系统退出时，jvm通过注册的Shutdown Hook拦截到退出信号量，然后执行退出操作，释放相关模块的
+资源占用，将缓冲区的消息处理完成或者清空，将待刷新的数据持久化到磁盘或者数据库中，等到资源回收和缓冲区消息处理完之后，再退出。
+优雅停机往往需要设置个最大超时时间T，如果达到T后系统仍然没有退出，则通过kill -9强杀当前的进程。
+
+netty重要的优雅退出方法：
+	1、EventExecutorGroup.shutdownGracefully()：nio线程优雅退出
+	2、EventExecutorGroup.shutdownGracefully(long quietPeriod, long timeout, TimeUnit unit)：nio线程优雅退出，支持设置超时时间
+	3、Channel.close()：Channel的关闭
+	4、Unsafe.close(ChannelPromise promise)：Unsafe的关闭操作，可以设置可写的Future
+	5、Unsafe.closeForcibly():Unsafe的强制关闭操作
+	6、ChannelPipeline.close()：ChannelPipeline的关闭
+	7、ChannelPipeline.close(ChannelPromise promise)：ChannelPipeline的关闭，可以设置可写的Future
+	8、ChannelHandler.close(ChannelHandlerContext ctx, ChannelPromise promise)：ChannelHandler的关闭

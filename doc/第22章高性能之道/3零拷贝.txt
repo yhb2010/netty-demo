@@ -1,0 +1,4 @@
+1、netty的接收和发送ByteBuffer采用Direct Buffers，使用堆外直接内存进行socket读写，不需要进行字节缓冲区的二次拷贝
+2、CompositeByteBuf：它对外将多个ByteBuf封装成一个ByteBuf，对外提供统一封装后的ByteBuf接口。
+3、文件传输：netty文件传输类DefaultFileRegion通过transferTo方法将文件发送到目标Channel中，很多操作系统直接将文件缓冲区的内容发送到目标
+Channel中，而不需要通过循环拷贝的方式，这是一种更高效的传输方式，提升了传输性能，降低了cpu和内存占用，实现了文件传输的零拷贝。

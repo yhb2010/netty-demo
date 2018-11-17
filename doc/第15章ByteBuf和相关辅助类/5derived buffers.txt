@@ -1,0 +1,9 @@
+用于创建ByteBuf视图或复制ByteBuf：
+duplicate：返回当前ByteBuf的复制对象，复制后，返回的ByteBuf与操作的ByteBuf共享缓冲区内容，但是维护自己独立的读写索引。当修改复制后的ByteBuf内容后，之前原ByteBuf
+的内容也随之改变，双方持有的是同一个内容指针引用
+copy：复制一个新的ByteBuf对象，它的内容和索引都是独立的，复制操作本身并不修改原ByteBuf的读写索引
+copy(int index, int length)：从指定的索引开始复制，复制的字节长度为length，复制后ByteBuf内容和读写索引都与之前的独立
+slice：返回当前ByteBuf的可读子缓冲区，起始位置从readerIndex到writerIndex，返回后的ByteBuf与原ByteBuf共享内容，但是读写索引独立维护。该操作并不修改原ByteBuf
+的readerIndex到writerIndex
+slice(int index, int length)：返回当前ByteBuf的可读自缓冲区，起始位置从index到index+length，返回后的ByteBuf与原ByteBuf共享内容，但是读写索引独立
+维护，该操作并不修改原ByteBuf的readerIndex到writerIndex

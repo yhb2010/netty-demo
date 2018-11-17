@@ -1,0 +1,4 @@
+ByteBuffer nioBuffer()：将当前ByteBuf可读的缓冲区转换成ByteBuffer，两者共享同一个缓冲区内容引用，对ByteBuffer的读写操作并不会修改原ByteBuf的读写索引。
+需要指出的是，返回后的ByteBuffer无法感知原ByteBuf的动态扩展操作。
+ByteBuffer nioBuffer(int index, int length)：将当前ByteBuf从index开始长度为length的缓冲区转换成ByteBuffer，两者共享同一个缓冲区内容引用，对
+ByteBuffer的读写操作并不会修改原ByteBuf的读写索引。需要指出的是，返回后的ByteBuffer无法感知原ByteBuf的动态扩展操作。

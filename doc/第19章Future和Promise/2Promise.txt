@@ -1,0 +1,11 @@
+Promise是可写的Future，Future自身没有写操作相关的接口，netty通过Promise对Future进行扩展，用于设置io操作的结果。
+	setFailure(java.lang.Throwable cause)
+	setSuccess(V result)
+	setUncancellable()
+	sync()
+	syncUninterruptibly()
+	tryFailure(java.lang.Throwable cause)
+	trySuccess(V result)
+
+netty发起io操作的时候，会创建一个新的Promise对象，例如调用ChannelHandlerContext的write(Object, Object)方法时，会创建一个新的ChannelPromise。
+当io操作发生异常或者完成时，设置Promise的结果。

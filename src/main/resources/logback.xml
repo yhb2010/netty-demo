@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration>
+<configuration>
+	<property name="log.path" value="/web/logs/util.demo.root" />
+	<property name="log.level" value="warn" />
+    <appender name="warn" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <File>${log.path}/warn/WARN.log</File>
+        <Append>true</Append>
+        <encoder>
+            <pattern>%d %p - %C[%L] - [%t] - %m %n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/warn/WARN.%d{yyyyMMdd}.log</fileNamePattern>
+        </rollingPolicy>
+    </appender>
+    <appender name="debug" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <Append>true</Append>
+        <File>${log.path}/debug/DEBUG.log</File>
+        <encoder>
+            <pattern>%d %p - %C[%L] - [%t] - %m %n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/debug/DEBUG.%d{yyyyMMdd}.log</fileNamePattern>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+    </appender>
+    <appender name="info" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <Append>true</Append>
+        <File>${log.path}/info/INFO.log</File>
+        <encoder>
+            <pattern>%d %p - %C[%L] - [%t] - %m %n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/info/INFO.%d{yyyyMMdd}.log</fileNamePattern>
+            <maxHistory>10</maxHistory>
+        </rollingPolicy>
+    </appender>
+    <appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${log.path}/error/ERROR.log</File>
+        <Append>true</Append>
+        <encoder>
+            <pattern>%d %p - %C[%L] - [%t] - %m %n</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>error</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/error/ERROR.%d{yyyyMMdd}.log</fileNamePattern>
+            <maxHistory>10</maxHistory>
+        </rollingPolicy>
+    </appender>
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d %p - %C[%L] - [%t] - %m %n</pattern>
+        </encoder>
+    </appender>
+    <logger name="org.apache" level="WARN">
+        <appender-ref ref="warn"/>
+        <appender-ref ref="error"/>
+    </logger>
+    <logger name="org.hibernate.validator" level="WARN">
+        <appender-ref ref="warn"/>
+        <appender-ref ref="error"/>
+    </logger>
+    <logger name="org.mybatis" level="warn">
+        <appender-ref ref="warn"/>
+        <appender-ref ref="error"/>
+    </logger>
+    <logger name="org.apache.ibatis" level="warn">
+        <appender-ref ref="warn"/>
+        <appender-ref ref="error"/>
+    </logger>
+    <logger name="org.springframework" level="WARN">
+        <appender-ref ref="warn"/>
+        <appender-ref ref="error"/>
+    </logger>
+    <logger name="com.cdeledu.eagleeyes.client" level="ERROR">
+        <appender-ref ref="error"/>
+    </logger>
+    <root level="${log.level}">
+        <appender-ref ref="stdout"/>
+        <appender-ref ref="debug"/>
+        <appender-ref ref="info"/>
+        <appender-ref ref="warn"/>
+        <appender-ref ref="error"/>
+    </root>
+</configuration>

@@ -1,0 +1,9 @@
+tcp参数主要如下：
+	SO_TIMEOUT：控制读取操作将阻塞多少毫秒，如果返回值为0，计时器就被禁止了，该线程将无限期阻塞。
+	SO_SNDBUF：套接字使用的发送缓冲区大小
+	SO_RCVBUF：套接字使用的接收缓冲区大小
+	SO_REUSEADDR：用于决定如果网络上仍然有数据向旧的ServerSocket传输数据，是否允许新的ServerSocket绑定到与旧的ServerSocket同样的端口上。SO_REUSEADDR
+	默认值与操作系统有关，在某些系统中，允许重用端口，而有些系统不允许重用端口
+	CONNECT_TIMEOUT_MILLIS：客户端连接超时时间，由于NIO原生的客户端并不提供设置连接超时的接口，因此，netty采用的是自定义连接超时定时器负责检测和超时控制。
+	TCP_NODELAY：激活或禁止TCP_NODELAY套接字选项，他决定是否使用Nagle算法。如果是时延敏感的应用，建议关闭Nagle算法。
+	

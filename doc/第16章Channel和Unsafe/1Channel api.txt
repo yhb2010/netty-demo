@@ -1,0 +1,28 @@
+1、read：从当前的Channel中读取数据到第一个inbound缓冲区中，如果数据被成功读取，触发ChannelHandler.channelRead事件。读取操作api调用完成
+后触发ChannelHandler.channelReadComplete事件，这样业务的ChannelHandler可以决定是否需要继续读取数据。如果已经有读操作请求被挂起，则后续的
+读操作会被忽略。
+2、write：请求将当前的msg通过ChannelPipeline写入到目标Channel中，注意，write操作只是将消息存入消息发送环形数组中，并没有真正被发送，只有调用
+flush操作才会被写入到Channel中，发送给对方
+3、write(Object msg, ChannelPromise promise)功能与write相同，但是携带了ChannelPromise参数负责设置写入操作的结果
+4、writeAndFlush：和2类似，不同之处是会将消息写入Channel中发送
+5、writeAndFlush(Object msg, ChannelPromise promise)
+6、flush：将之前写入到发送环形数组中的消息全部写入到目标Channel中，发送给通信对方
+7、close(ChannelPromise promise)：主动关闭当前连接，通过ChannelPromise设置操作结果并进行结果通知，无论操作是否成功，都可以通过ChannelPromise
+获取操作结果。该操作会级联触发ChannelPipeline中所有ChannelHandler的ChannelHandler.close事件
+8、disconnect(ChannelPromise promise)：请求断开与远程通信对端的连接并使用ChannelPromise来获取操作结果的通知消息。该方法会级联触发
+ChannelHandler.disconnect事件
+9、connect(SocketAddress remoteAddress)：客户端使用指定的服务端地址remoteAddress发起连接请求，如果连接因为应答超时而失败，ChannelFuture中
+的操作结果就是ConnectTimeoutException；如果连接被拒绝，操作结果为ConnectException。该方法会级联触发ChannelHandler.connect事件
+10、connect(SocketAddress remoteAddress, SocketAddress localAddress)：与9类似，不同是先绑定到指定的本地地址localAddress，然后在连接
+服务端
+11、connect(SocketAddress remoteAddress, ChannelPromise promise)：与9类似，不同是携带了ChannelPromise参数用于写入操作结果
+12、connect(SocketAddress remoteAddress, SocketAddress localAddress, ChannelPromise promise)：与11类似，不同是绑定了本地地址
+13、bind(SocketAddress localAddress)：绑定指定的本地Socket地址localAddress，该方法会级联触发ChannelHandler.bind事件
+14、bind(SocketAddress localAddress, ChannelPromise promise)：与13类似，多携带了一个ChannelPromise用于写入操作结果
+15、ChannelConfig config()：获取当前Channel的配置信息，例如CONNECT_TIMEOUT_MILLIS
+16、boolean isOpen()：判断当前Channel是否已经打开
+17、isRegistered()：判断当前Channel是否已经注册到EventLoop上
+18、isActive()：判断当前Channel是否已经处于激活状态
+19、ChannelMetadata metadata()：获取当前Channel的元数据描述信息，包括tcp参数配置等
+20、SocketAddress localAddress():获取当前Channel的本地绑定地址
+21、SocketAddress remoteAddress():获取当前Channel通信的远程Socket地址

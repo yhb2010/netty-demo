@@ -1,0 +1,11 @@
+1、创建ServerSocketChannel，配置他为非阻塞模式
+2、绑定监听，配置tcp参数，例如backlog大小
+3、创建一个独立的io线程，用于轮询多路复用器selector
+4、创建selector，将之前创建的ServerSocketChannel注册到selector上，监听SelectionKey.ACCEPT
+5、启动io线程，在循环体中执行Selector.select()方法，轮询就绪的Channel
+6、当轮询到了处于就绪状态的Channel时，需要对其进行判断，如果是OP_ACCEPT状态，说明是新的客户端接入，则调用ServerSocketChannel.accept方法接受
+新的客户端
+7、设置新接入的客户端链路SocketChannel为非阻塞模式，配置其它的一些tcp参数
+8、将SocketChannel注册到selector，监听OP_READ操作位
+9、如果轮询的Channel为OP_READ，则说明SocketChannel中有新的就绪的数据包需要读取，则构造ByteBuffer对象，读取数据包
+10、如果轮询的Channel为OP_WRITE，说明还有数据没有发生完成，需要继续发送
