@@ -1,6 +1,3 @@
-# ZooKeeper 服务器
-registry:
-  address: ip104:2181
-# RPC 服务器
-server:
-  address: 127.0.0.1:8000
+spring:
+  profiles:
+    active: loc
